@@ -1,0 +1,261 @@
+:root {
+    --ink: #0c0c10;
+    --ink-soft: #17171d;
+    --comic-red: #d81e2c;
+    --comic-red-dark: #9c1420;
+    --comic-blue: #1e3fae;
+    --paper: #ece6d5;
+    --muted: #9a9aa5;
+    --line: #2a2a33;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Ben-Day dot texture over the whole page, comic-print style */
+.halftone-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.2px);
+    background-size: 5px 5px;
+    mix-blend-mode: overlay;
+    opacity: 0.6;
+}
+
+/* MASTHEAD */
+.masthead {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 5rem 1.5rem 3rem;
+}
+
+.masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--comic-red);
+}
+
+.masthead-title {
+    font-family: 'Bangers', cursive;
+    font-weight: 400;
+    font-size: clamp(2.8rem, 9vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin: 0.75rem 0 1rem;
+    color: var(--paper);
+    -webkit-text-stroke: 1.5px var(--ink);
+    text-shadow:
+        3px 3px 0 var(--comic-red),
+        6px 6px 0 var(--comic-blue);
+}
+
+.masthead-sub {
+    max-width: 32rem;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* RACK — the three issue cards */
+.rack {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3rem;
+    padding: 2rem 6vw 5rem;
+}
+
+.issue {
+    width: 260px;
+    cursor: none; /* the floating comic-panel preview stands in for the cursor */
+    outline: none;
+    transition: transform 0.25s ease;
+}
+
+.issue--tilt-left { transform: rotate(-3deg); }
+.issue--straight  { transform: rotate(0deg); }
+.issue--tilt-right { transform: rotate(3deg); }
+
+.issue:hover,
+.issue:focus-visible {
+    transform: rotate(0deg) translateY(-10px) scale(1.04);
+    z-index: 3;
+}
+
+.issue-frame {
+    position: relative;
+    background: var(--ink-soft);
+    border: 3px solid var(--paper);
+    border-radius: 4px;
+    box-shadow: 8px 8px 0 var(--comic-red-dark);
+    overflow: hidden;
+    transition: box-shadow 0.25s ease;
+}
+
+.issue:hover .issue-frame,
+.issue:focus-visible .issue-frame {
+    box-shadow: 12px 12px 0 var(--comic-red);
+}
+
+.issue-number {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    padding: 0.15rem 0.45rem;
+}
+
+.issue-art {
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.6px) 0 0/8px 8px,
+        linear-gradient(160deg, var(--comic-blue) 0%, var(--ink) 70%);
+    position: relative;
+}
+
+.issue-placeholder-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(236, 230, 213, 0.45);
+    border: 1px dashed rgba(236, 230, 213, 0.35);
+    border-radius: 3px;
+    padding: 0.3rem 0.6rem;
+}
+
+.issue-plate {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 0.85rem 1rem 1rem;
+    border-top: 3px solid var(--ink);
+}
+
+.issue-name {
+    font-family: 'Bangers', cursive;
+    font-weight: 400;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+    line-height: 1;
+}
+
+.issue-era {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    color: var(--comic-red-dark);
+    margin-top: 0.35rem;
+}
+
+.rack-note {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 0 1.5rem 4rem;
+}
+
+.rack-note code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    color: var(--paper);
+}
+
+/* FLOATING CURSOR PREVIEW — comic caption-box styling */
+#cursor-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 240px;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0;
+    transform: scale(0.7) rotate(-2deg);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    background: var(--ink-soft);
+    border: 3px solid var(--paper);
+    border-radius: 4px;
+    box-shadow: 10px 10px 0 var(--comic-red);
+    overflow: hidden;
+}
+
+#cursor-preview.active {
+    opacity: 1;
+    transform: scale(1) rotate(-2deg);
+}
+
+.cursor-preview-caption {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+}
+
+#cursor-preview-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .rack { gap: 2rem; }
+    .issue--tilt-left, .issue--tilt-right { transform: rotate(0deg); }
+}
+
+@media (max-width: 480px) {
+    .issue { width: 100%; max-width: 300px; }
+    #cursor-preview { display: none; } /* no real cursor to follow on touch */
+    .issue { cursor: default; }
+}

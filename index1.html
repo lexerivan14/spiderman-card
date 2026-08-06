@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spooderman</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+  <div class="halftone-overlay"></div>
+
+  <header class="masthead">
+    <span class="masthead-eyebrow">A Newsstand Retrospective</span>
+     <h1 class="masthead-title">SPIDERMAN<br></h1>
+    <p class="masthead-sub">Hover an issue to swing into its era. Three actors, three runs, one web-slinger — each one yearning for the girl he can't quite hold onto.</p>
+  </header>
+
+  <main class="rack">
+
+    <!-- ISSUE #01 -->
+    <article class="issue issue--tilt-left" data-issue="01" data-era="tobey" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#01</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">tobey.mp4</span>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">TOBEY MAGUIRE</h2>
+          <p class="issue-era">THE ORIGINAL &middot; 2002–2007</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- ISSUE #02 -->
+    <article class="issue issue--straight" data-issue="02" data-era="andrew" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#02</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">andrew.mp4</span>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">ANDREW GARFIELD</h2>
+          <p class="issue-era">THE AMAZING REBOOT &middot; 2012–2014</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- ISSUE #03 -->
+    <article class="issue issue--tilt-right" data-issue="03" data-era="tom" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#03</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">tom.mp4</span>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">TOM HOLLAND</h2>
+          <p class="issue-era">THE MCU YEARS &middot; 2016–PRESENT</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+
+  <!-- Floating comic-panel preview that follows the cursor on hover -->
+  <div id="cursor-preview">
+    <div class="cursor-preview-caption" id="cursor-preview-caption">ISSUE #01</div>
+    <video id="cursor-preview-video" loop playsinline></video>
+  </div>
+
+  <script src="script1.js"></script>
+</body>
+</html>

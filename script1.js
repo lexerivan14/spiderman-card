@@ -1,81 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spooderman</title>
+document.addEventListener('DOMContentLoaded', () => {
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    const previewBox = document.getElementById('cursor-preview');
+    const previewVideo = document.getElementById('cursor-preview-video');
+    const previewCaption = document.getElementById('cursor-preview-caption');
 
-<link rel="stylesheet" href="style1.css">
-</head>
-<body>
+    const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-  <div class="halftone-overlay"></div>
+    // Global sound unlock state
+    let soundUnlocked = false;
+    const unlockSound = () => { soundUnlocked = true; };
+    document.addEventListener('click', unlockSound, { once: true });
+    document.addEventListener('touchstart', unlockSound, { once: true });
 
-  <header class="masthead">
-    <span class="masthead-eyebrow">A Newsstand Retrospective</span>
-     <h1 class="masthead-title">SPIDERMAN</h1>
-    <p class="masthead-sub">Tap or hover an issue to swing into its era. Three actors, three runs, one web-slinger — each one yearning for the girl he can't quite hold onto.</p>
-  </header>
+    const eraContent = {
+        tobey:  { src: 'media/tobey.mp4',  caption: 'ISSUE #01 — 2002–2007' },
+        andrew: { src: 'media/andrew.mp4', caption: 'ISSUE #02 — 2012–2014' },
+        tom:    { src: 'media/tom.mp4',    caption: 'ISSUE #03 — 2016–Present' }
+    };
 
-  <main class="rack">
+    let mouseX = 0;
+    let mouseY = 0;
 
-    <!-- ISSUE #01 -->
-    <article class="issue issue--tilt-left" data-issue="01" data-era="tobey" tabindex="0">
-      <div class="issue-frame">
-        <span class="issue-number">#01</span>
-        <div class="issue-art">
-          <span class="issue-placeholder-mark">tobey.mp4</span>
-          <video class="card-inline-video" src="media/tobey.mp4" loop muted playsinline></video>
-        </div>
-        <div class="issue-plate">
-          <h2 class="issue-name">TOBEY MAGUIRE</h2>
-          <p class="issue-era">THE ORIGINAL &middot; 2002–2007</p>
-        </div>
-      </div>
-    </article>
+    function positionPreview() {
+        if (!previewBox) return;
+        const offset = 24;
+        const rect = previewBox.getBoundingClientRect();
+        let x = mouseX + offset;
+        let y = mouseY + offset;
 
-    <!-- ISSUE #02 -->
-    <article class="issue issue--straight" data-issue="02" data-era="andrew" tabindex="0">
-      <div class="issue-frame">
-        <span class="issue-number">#02</span>
-        <div class="issue-art">
-          <span class="issue-placeholder-mark">andrew.mp4</span>
-          <video class="card-inline-video" src="media/andrew.mp4" loop muted playsinline></video>
-        </div>
-        <div class="issue-plate">
-          <h2 class="issue-name">ANDREW GARFIELD</h2>
-          <p class="issue-era">THE AMAZING REBOOT &middot; 2012–2014</p>
-        </div>
-      </div>
-    </article>
+        if (x + rect.width > window.innerWidth) x = mouseX - rect.width - offset;
+        if (y + rect.height > window.innerHeight) y = mouseY - rect.height - offset;
 
-    <!-- ISSUE #03 -->
-    <article class="issue issue--tilt-right" data-issue="03" data-era="tom" tabindex="0">
-      <div class="issue-frame">
-        <span class="issue-number">#03</span>
-        <div class="issue-art">
-          <span class="issue-placeholder-mark">tom.mp4</span>
-          <video class="card-inline-video" src="media/tom.mp4" loop muted playsinline></video>
-        </div>
-        <div class="issue-plate">
-          <h2 class="issue-name">TOM HOLLAND</h2>
-          <p class="issue-era">THE MCU YEARS &middot; 2016–PRESENT</p>
-        </div>
-      </div>
-    </article>
+        previewBox.style.left = `${Math.max(0, x)}px`;
+        previewBox.style.top = `${Math.max(0, y)}px`;
+    }
 
-  </main>
+    if (!isTouchDevice) {
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (previewBox && previewBox.classList.contains('active')) positionPreview();
+        });
+    }
 
-  <!-- Floating comic-panel preview that follows the cursor on desktop hover -->
-  <div id="cursor-preview">
-    <div class="cursor-preview-caption" id="cursor-preview-caption">ISSUE #01</div>
-    <video id="cursor-preview-video" loop muted playsinline></video>
-  </div>
+    document.querySelectorAll('.issue').forEach(card => {
+        const era = card.getAttribute('data-era');
+        const content = eraContent[era];
+        if (!content) return;
 
-  <script src="script1.js"></script>
-</body>
-</html>
+        const inlineVideo = card.querySelector('.card-inline-video');
+
+        if (isTouchDevice) {
+            // MOBILE / TOUCH INTERACTION
+            card.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                
+                // Force sound unlock since propagation is stopped
+                soundUnlocked = true; 
+
+                const isActive = card.classList.contains('touch-active');
+
+                // Close and mute all other cards first
+                document.querySelectorAll('.issue').forEach(c => {
+                    c.classList.remove('touch-active');
+                    const v = c.querySelector('.card-inline-video');
+                    if (v) {
+                        v.pause();
+                        v.muted = true;
+                    }
+                });
+
+                if (!isActive) {
+                    card.classList.add('touch-active');
+                    if (inlineVideo) {
+                        // Explicitly unmute because a tap is a direct user interaction
+                        inlineVideo.muted = false; 
+                        inlineVideo.currentTime = 0;
+                        
+                        inlineVideo.play().catch(err => {
+                            console.log('Mobile play error:', err);
+                            // Fallback for strict iOS policies
+                            inlineVideo.muted = true;
+                            inlineVideo.play();
+                        });
+                    }
+                }
+            });
+        } else {
+            // DESKTOP HOVER INTERACTION
+            const reveal = () => {
+                if (!previewVideo || !previewBox) return;
+                if (!previewVideo.src.endsWith(content.src)) {
+                    previewVideo.src = content.src;
+                }
+                if (previewCaption) previewCaption.textContent = content.caption;
+                previewVideo.muted = !soundUnlocked;
+                previewVideo.currentTime = 0;
+                previewVideo.play().catch(err => console.log('Playback error:', err));
+                previewBox.classList.add('active');
+                positionPreview();
+            };
+
+            const hide = () => {
+                if (!previewVideo || !previewBox) return;
+                previewVideo.pause();
+                previewBox.classList.remove('active');
+            };
+
+            card.addEventListener('mouseenter', reveal);
+            card.addEventListener('mouseleave', hide);
+            card.addEventListener('focus', reveal);
+            card.addEventListener('blur', hide);
+        }
+    });
+
+    // Close mobile videos if tapping the background
+    if (isTouchDevice) {
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.issue').forEach(c => {
+                c.classList.remove('touch-active');
+                const v = c.querySelector('.card-inline-video');
+                if (v) {
+                    v.pause();
+                    v.muted = true; // Re-mute when hiding
+                }
+            });
+        });
+    }
+
+    document.addEventListener('mouseleave', () => {
+        if (previewVideo && previewBox) {
+            previewVideo.pause();
+            previewBox.classList.remove('active');
+        }
+    });
+
+});

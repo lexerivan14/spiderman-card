@@ -1,82 +1,81 @@
-document.addEventListener('DOMContentLoaded', () => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spooderman</title>
 
-    const previewBox = document.getElementById('cursor-preview');
-    const previewVideo = document.getElementById('cursor-preview-video');
-    const previewCaption = document.getElementById('cursor-preview-caption');
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-    if (!previewBox || !previewVideo) return;
+<link rel="stylesheet" href="style1.css">
+</head>
+<body>
 
-    // Browsers block unmuted autoplay until the user has directly clicked
-    // something on the page (hovering alone doesn't count as a "gesture").
-    // Start muted so the preview always plays instantly, then switch to
-    // unmuted the moment the visitor clicks anywhere.
-    previewVideo.muted = true;
-    let soundUnlocked = false;
-    document.addEventListener('click', () => { soundUnlocked = true; }, { once: true });
+  <div class="halftone-overlay"></div>
 
-    // Map each issue to its own placeholder clip + caption.
-    // Replace these src paths with your own local files, e.g. "media/tobey.mp4".
-    const eraContent = {
-        tobey:  { src: 'media/tobey.mp4',  caption: 'ISSUE #01 — 2002–2007' },
-        andrew: { src: 'media/andrew.mp4', caption: 'ISSUE #02 — 2012–2014' },
-        tom:    { src: 'media/tom.mp4',    caption: 'ISSUE #03 — 2016–Present' }
-    };
+  <header class="masthead">
+    <span class="masthead-eyebrow">A Newsstand Retrospective</span>
+     <h1 class="masthead-title">SPIDERMAN</h1>
+    <p class="masthead-sub">Tap or hover an issue to swing into its era. Three actors, three runs, one web-slinger — each one yearning for the girl he can't quite hold onto.</p>
+  </header>
 
-    let mouseX = 0;
-    let mouseY = 0;
+  <main class="rack">
 
-    function positionPreview() {
-        const offset = 24;
-        const rect = previewBox.getBoundingClientRect();
-        let x = mouseX + offset;
-        let y = mouseY + offset;
+    <!-- ISSUE #01 -->
+    <article class="issue issue--tilt-left" data-issue="01" data-era="tobey" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#01</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">tobey.mp4</span>
+          <video class="card-inline-video" src="media/tobey.mp4" loop muted playsinline></video>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">TOBEY MAGUIRE</h2>
+          <p class="issue-era">THE ORIGINAL &middot; 2002–2007</p>
+        </div>
+      </div>
+    </article>
 
-        if (x + rect.width > window.innerWidth) x = mouseX - rect.width - offset;
-        if (y + rect.height > window.innerHeight) y = mouseY - rect.height - offset;
+    <!-- ISSUE #02 -->
+    <article class="issue issue--straight" data-issue="02" data-era="andrew" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#02</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">andrew.mp4</span>
+          <video class="card-inline-video" src="media/andrew.mp4" loop muted playsinline></video>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">ANDREW GARFIELD</h2>
+          <p class="issue-era">THE AMAZING REBOOT &middot; 2012–2014</p>
+        </div>
+      </div>
+    </article>
 
-        previewBox.style.left = `${Math.max(0, x)}px`;
-        previewBox.style.top = `${Math.max(0, y)}px`;
-    }
+    <!-- ISSUE #03 -->
+    <article class="issue issue--tilt-right" data-issue="03" data-era="tom" tabindex="0">
+      <div class="issue-frame">
+        <span class="issue-number">#03</span>
+        <div class="issue-art">
+          <span class="issue-placeholder-mark">tom.mp4</span>
+          <video class="card-inline-video" src="media/tom.mp4" loop muted playsinline></video>
+        </div>
+        <div class="issue-plate">
+          <h2 class="issue-name">TOM HOLLAND</h2>
+          <p class="issue-era">THE MCU YEARS &middot; 2016–PRESENT</p>
+        </div>
+      </div>
+    </article>
 
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        if (previewBox.classList.contains('active')) positionPreview();
-    });
+  </main>
 
-    document.querySelectorAll('.issue').forEach(card => {
-        const era = card.getAttribute('data-era');
-        const content = eraContent[era];
-        if (!content) return;
+  <!-- Floating comic-panel preview that follows the cursor on desktop hover -->
+  <div id="cursor-preview">
+    <div class="cursor-preview-caption" id="cursor-preview-caption">ISSUE #01</div>
+    <video id="cursor-preview-video" loop muted playsinline></video>
+  </div>
 
-        const reveal = () => {
-            if (!previewVideo.src.endsWith(content.src)) {
-                previewVideo.src = content.src;
-            }
-            previewCaption.textContent = content.caption;
-            previewVideo.muted = !soundUnlocked;
-            previewVideo.currentTime = 0;
-            previewVideo.play().catch(err => console.log('Playback error (add a real clip at ' + content.src + '):', err));
-            previewBox.classList.add('active');
-            positionPreview();
-        };
-
-        const hide = () => {
-            previewVideo.pause();
-            previewBox.classList.remove('active');
-        };
-
-        card.addEventListener('mouseenter', reveal);
-        card.addEventListener('mouseleave', hide);
-
-        // Keyboard accessibility: focus/blur mirrors hover behavior
-        card.addEventListener('focus', reveal);
-        card.addEventListener('blur', hide);
-    });
-
-    document.addEventListener('mouseleave', () => {
-        previewVideo.pause();
-        previewBox.classList.remove('active');
-    });
-
-});
+  <script src="script1.js"></script>
+</body>
+</html>

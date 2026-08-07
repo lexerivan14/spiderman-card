@@ -95,9 +95,11 @@ body {
 
 .issue {
     width: 260px;
-    cursor: none; /* the floating comic-panel preview stands in for the cursor */
+    cursor: pointer;
     outline: none;
     transition: transform 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .issue--tilt-left { transform: rotate(-3deg); }
@@ -105,7 +107,8 @@ body {
 .issue--tilt-right { transform: rotate(3deg); }
 
 .issue:hover,
-.issue:focus-visible {
+.issue:focus-visible,
+.issue.touch-active {
     transform: rotate(0deg) translateY(-10px) scale(1.04);
     z-index: 3;
 }
@@ -121,7 +124,8 @@ body {
 }
 
 .issue:hover .issue-frame,
-.issue:focus-visible .issue-frame {
+.issue:focus-visible .issue-frame,
+.issue.touch-active .issue-frame {
     box-shadow: 12px 12px 0 var(--comic-red);
 }
 
@@ -129,7 +133,7 @@ body {
     position: absolute;
     top: 0.6rem;
     left: 0.6rem;
-    z-index: 2;
+    z-index: 3;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
     font-weight: 500;
@@ -150,6 +154,7 @@ body {
         radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.6px) 0 0/8px 8px,
         linear-gradient(160deg, var(--comic-blue) 0%, var(--ink) 70%);
     position: relative;
+    overflow: hidden;
 }
 
 .issue-placeholder-mark {
@@ -159,6 +164,27 @@ body {
     border: 1px dashed rgba(236, 230, 213, 0.35);
     border-radius: 3px;
     padding: 0.3rem 0.6rem;
+    transition: opacity 0.3s ease;
+}
+
+/* Inline video inside card for mobile views */
+.card-inline-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.issue.touch-active .card-inline-video {
+    opacity: 1;
+}
+
+.issue.touch-active .issue-placeholder-mark {
+    opacity: 0;
 }
 
 .issue-plate {
@@ -184,25 +210,7 @@ body {
     margin-top: 0.35rem;
 }
 
-.rack-note {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--muted);
-    padding: 0 1.5rem 4rem;
-}
-
-.rack-note code {
-    font-family: 'JetBrains Mono', monospace;
-    background: var(--ink-soft);
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    padding: 0.1rem 0.4rem;
-    color: var(--paper);
-}
-
-/* FLOATING CURSOR PREVIEW — comic caption-box styling */
+/* FLOATING CURSOR PREVIEW — hidden on touch devices */
 #cursor-preview {
     position: fixed;
     top: 0;
@@ -254,8 +262,12 @@ body {
     .issue--tilt-left, .issue--tilt-right { transform: rotate(0deg); }
 }
 
-@media (max-width: 480px) {
-    .issue { width: 100%; max-width: 300px; }
-    #cursor-preview { display: none; } /* no real cursor to follow on touch */
-    .issue { cursor: default; }
+@media (max-width: 340px) {
+    .rack { padding-left: 1rem; padding-right: 1rem; }
+    .issue { width: 100%; max-width: 260px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    #cursor-preview { display: none !important; } /* Hide floating preview on touch devices */
+    .issue { cursor: pointer; }
 }

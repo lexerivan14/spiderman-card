@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style1.css">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
   <header class="masthead">
     <span class="masthead-eyebrow">A Newsstand Retrospective</span>
      <h1 class="masthead-title">SPIDERMAN<br></h1>
-    <p class="masthead-sub">Hover an issue to swing into its era. Three actors, three runs, one web-slinger — each one yearning for the girl he can't quite hold onto.</p>
+    <p class="masthead-sub">Tap or hover an issue to swing into its era. Three actors, three runs, one web-slinger — each one yearning for the girl he can't quite hold onto.</p>
   </header>
 
   <main class="rack">
@@ -29,6 +29,7 @@
         <span class="issue-number">#01</span>
         <div class="issue-art">
           <span class="issue-placeholder-mark">tobey.mp4</span>
+          <video class="card-inline-video" src="media/tobey.mp4" loop muted playsinline></video>
         </div>
         <div class="issue-plate">
           <h2 class="issue-name">TOBEY MAGUIRE</h2>
@@ -43,6 +44,7 @@
         <span class="issue-number">#02</span>
         <div class="issue-art">
           <span class="issue-placeholder-mark">andrew.mp4</span>
+          <video class="card-inline-video" src="media/andrew.mp4" loop muted playsinline></video>
         </div>
         <div class="issue-plate">
           <h2 class="issue-name">ANDREW GARFIELD</h2>
@@ -57,6 +59,7 @@
         <span class="issue-number">#03</span>
         <div class="issue-art">
           <span class="issue-placeholder-mark">tom.mp4</span>
+          <video class="card-inline-video" src="media/tom.mp4" loop muted playsinline></video>
         </div>
         <div class="issue-plate">
           <h2 class="issue-name">TOM HOLLAND</h2>
@@ -67,13 +70,12 @@
 
   </main>
 
-
-  <!-- Floating comic-panel preview that follows the cursor on hover -->
+  <!-- Floating comic-panel preview that follows the cursor on desktop hover -->
   <div id="cursor-preview">
     <div class="cursor-preview-caption" id="cursor-preview-caption">ISSUE #01</div>
-    <video id="cursor-preview-video" loop playsinline></video>
+    <video id="cursor-preview-video" loop muted playsinline></video>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script1.js"></script>
 </body>
 </html>
